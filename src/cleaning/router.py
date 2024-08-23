@@ -1,18 +1,23 @@
-from fastapi import APIRouter, status, Depends
-from sqlalchemy import insert, select, delete, update
+from fastapi import APIRouter, Depends, status
+from sqlalchemy import delete, insert, select, update
+
 from database import get_async_session
+
 from .models import Cleaning
-from .schemas import CleaningReadSchema, CleaningCreateSchema, CleaningUpdateSchema
+from .schemas import CleaningCreateSchema, CleaningReadSchema, CleaningUpdateSchema
 
 router = APIRouter(tags=["cleaning"], prefix="/cleaning")
 
 
 @router.post("/", status_code=status.HTTP_201_CREATED)  # 1) Создание клининга
 async def create_cleaning(cleaning: CleaningCreateSchema, session=Depends(get_async_session)) -> CleaningReadSchema:
-    statement = insert(Cleaning).values(  #  "statement" - заявление
-        profile=cleaning.profile,
-        experience=cleaning.experience
-    ).returning(Cleaning)
+    statement = (
+        insert(Cleaning)
+        .values(  # "statement" - заявление
+            profile=cleaning.profile, experience=cleaning.experience
+        )
+        .returning(Cleaning)
+    )
     result = await session.scalar(statement)  # "await" - ожидать
     await session.commit()
     return result
@@ -27,7 +32,7 @@ async def get_cleanings(session=Depends(get_async_session)) -> list[CleaningRead
 
 @router.get("/{cleaning_id}", status_code=status.HTTP_202_ACCEPTED)  # 3) Получение данных о клиниге по id
 async def get_cleaning_by_id(cleaning_id: int, session=Depends(get_async_session)) -> CleaningReadSchema:
-    statement = select(Cleaning).where(Cleaning.id == cleaning_id) # "where" - где
+    statement = select(Cleaning).where(Cleaning.id == cleaning_id)  # "where" - где
     result = await session.scalar(statement)
     return result
 
@@ -40,13 +45,15 @@ async def delete_cleaning_by_id(cleaning_id: int, session=Depends(get_async_sess
 
 
 @router.put("/{cleaning_id}", status_code=status.HTTP_200_OK)  # 5) Обновление данных клининга по id
-async def update_cleaning_by_id(cleaning_id: int, cleaning: CleaningUpdateSchema,
-                                session=Depends(get_async_session)) -> CleaningReadSchema:
-    statement = update(Cleaning).where(Cleaning.id == cleaning_id).values(
-        profile=cleaning.profile,
-        experience=cleaning.experience
-    ).returning(Cleaning)
+async def update_cleaning_by_id(
+    cleaning_id: int, cleaning: CleaningUpdateSchema, session=Depends(get_async_session)
+) -> CleaningReadSchema:
+    statement = (
+        update(Cleaning)
+        .where(Cleaning.id == cleaning_id)
+        .values(profile=cleaning.profile, experience=cleaning.experience)
+        .returning(Cleaning)
+    )
     result = await session.scalar(statement)
     await session.commit()
     return result
-

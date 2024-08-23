@@ -1,8 +1,10 @@
 from datetime import datetime
+
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.sql import func
 
 from database import Base
+
 
 class Customer(Base):  # покупатель
     __tablename__ = "customer"

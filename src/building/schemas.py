@@ -5,12 +5,12 @@ from pydantic import BaseModel
 
 class BuildingReadSchema(BaseModel):
     id: int
-    name: str # название здания
-    profile: str # назначение
-    year: str # год постройки
-    floors: str # этажность
-    created_at: datetime # дата создания
-    updated_at: datetime # дата обновления
+    name: str  # название здания
+    profile: str  # назначение
+    year: str  # год постройки
+    floors: str  # этажность
+    created_at: datetime  # дата создания
+    updated_at: datetime  # дата обновления
 
 
 class BuildingCreateSchema(BaseModel):

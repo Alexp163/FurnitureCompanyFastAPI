@@ -7,7 +7,7 @@ from database import Base
 
 
 class Building(Base):  # здание
-    __tablename__ = 'building'
+    __tablename__ = "building"
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column()  # название здания
     profile: Mapped[str] = mapped_column()  # профиль работы

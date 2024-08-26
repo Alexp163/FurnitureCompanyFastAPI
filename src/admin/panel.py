@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from sqladmin import Admin, ModelView
 from sqlalchemy.ext.asyncio import AsyncEngine
 
-from .dependencies import Building, Cleaning, Customer
+from .dependencies import Building, Cleaning, Customer, Engineer, Location
 
 
 class BuildingModelView(ModelView, model=Building):
@@ -20,8 +20,20 @@ class CustomerModelView(ModelView, model=Customer):
     form_excluded_columns = [Customer.created_at, Customer.updated_at]
 
 
+class EngineerModelView(ModelView, model=Engineer):
+    column_list = [Engineer.name, Engineer.special, Engineer.experience]
+    form_excluded_columns = [Engineer.created_at, Engineer.updated_at]
+
+
+class LocationModelView(ModelView, model=Location):
+    column_list = [Location.name, Location.city, Location.distance]
+    form_excluded_columns = [Location.created_at, Location.updated_at]
+
+
 def register_admin(app: FastAPI, engine: AsyncEngine):
     admin = Admin(app, engine)
     admin.add_view(BuildingModelView)
     admin.add_view(CleaningModelView)
     admin.add_view(CustomerModelView)
+    admin.add_view(EngineerModelView)
+    admin.add_view(LocationModelView)

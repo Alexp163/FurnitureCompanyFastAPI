@@ -1,6 +1,8 @@
 from fastapi import APIRouter, Depends, status
-from sqlalchemy import select, insert, delete, update
+from sqlalchemy import insert, select, update
+
 from database import get_async_session
+
 from .models import Location
 from .schemas import LocationCreateSchema, LocationReadSchema, LocationUpdateSchema
 
@@ -9,11 +11,15 @@ router = APIRouter(tags=["locations"], prefix="/locations")
 
 @router.post("/", status_code=status.HTTP_201_CREATED)  # 1) Создает новую локацию
 async def created_location(location: LocationCreateSchema, session=Depends(get_async_session)) -> LocationReadSchema:
-    statement = insert(Location).values(
-        name=location.name,
-        city=location.city,
-        distance=location,
-    ).returning(Location)
+    statement = (
+        insert(Location)
+        .values(
+            name=location.name,
+            city=location.city,
+            distance=location,
+        )
+        .returning(Location)
+    )
     result = await session.scalar(statement)
     await session.commit()
     return result
@@ -41,15 +47,15 @@ async def delete_location_by_id(location_id: int, session=Depends(get_async_sess
 
 
 @router.put("/{location_id}", status_code=status.HTTP_200_OK)  # 5) Обновляет данные о локации
-async def update_location_by_id(location_id: int, location: LocationUpdateSchema,
-                                session=Depends(get_async_session)) -> LocationReadSchema:
-    statement = update(Location).where(Location.id == location_id).values(
-        name=location.name,
-        city=location.city,
-        distance=location.distance
-    ).returning(Location)
+async def update_location_by_id(
+    location_id: int, location: LocationUpdateSchema, session=Depends(get_async_session)
+) -> LocationReadSchema:
+    statement = (
+        update(Location)
+        .where(Location.id == location_id)
+        .values(name=location.name, city=location.city, distance=location.distance)
+        .returning(Location)
+    )
     result = await session.scalar(statement)
     await session.commit()
     return result
-
-

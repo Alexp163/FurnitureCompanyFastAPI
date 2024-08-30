@@ -1,6 +1,5 @@
 from pydantic import BaseModel
 
-from datetime import datetime
 
 class CustomerReadSchema(BaseModel):
     id: int

@@ -1,7 +1,8 @@
 from fastapi import APIRouter, Depends, status
-from sqlalchemy import insert, select, delete, update
+from sqlalchemy import delete, insert, select, update
 
 from database import get_async_session
+
 from .models import Engineer
 from .schemas import EngineerCreateSchema, EngineerReadSchema, EngineerUpdateSchema
 
@@ -10,11 +11,11 @@ router = APIRouter(tags=["engineers"], prefix="/engineers")
 
 @router.post("/", status_code=status.HTTP_201_CREATED)  # 1) создание инженера
 async def create_engineer(engineer: EngineerCreateSchema, session=Depends(get_async_session)) -> EngineerReadSchema:
-    statement = insert(Engineer).values(
-        name=engineer.name,
-        special=engineer.special,
-        experience=engineer.experience
-    ).returning(Engineer)
+    statement = (
+        insert(Engineer)
+        .values(name=engineer.name, special=engineer.special, experience=engineer.experience)
+        .returning(Engineer)
+    )
     result = await session.scalar(statement)
     await session.commit()
     return result
@@ -23,7 +24,7 @@ async def create_engineer(engineer: EngineerCreateSchema, session=Depends(get_as
 @router.get("/", status_code=status.HTTP_202_ACCEPTED)  # 2) Получает данные о всех инженерах
 async def get_engineer(session=Depends(get_async_session)) -> list[EngineerReadSchema]:  # "Depends" - зависит
     statement = select(Engineer)  # "statement" - заявление
-    result = await session.scalars(statement) # "await" -ожидать
+    result = await session.scalars(statement)  # "await" -ожидать
     return result
 
 
@@ -42,19 +43,15 @@ async def delete_engineer_by_id(engineer_id: int, session=Depends(get_async_sess
 
 
 @router.put("/{engineer_id}", status_code=status.HTTP_200_OK)  # 5 обновление инженера по id
-async def update_engineer_by_id(engineer_id: int, engineer: EngineerUpdateSchema,
-                                session=Depends(get_async_session)) -> EngineerReadSchema:
-    statement = update(Engineer).where(Engineer.id == engineer_id).values(
-        name=engineer.name,
-        special=engineer.special,
-        experience=engineer.experience
-    ).returning(Engineer)
+async def update_engineer_by_id(
+    engineer_id: int, engineer: EngineerUpdateSchema, session=Depends(get_async_session)
+) -> EngineerReadSchema:
+    statement = (
+        update(Engineer)
+        .where(Engineer.id == engineer_id)
+        .values(name=engineer.name, special=engineer.special, experience=engineer.experience)
+        .returning(Engineer)
+    )
     result = await session.scalar(statement)
     await session.commit()
     return result
-
-
-
-
-
-

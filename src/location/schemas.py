@@ -2,6 +2,7 @@ from datetime import datetime
 
 from pydantic import BaseModel
 
+
 class LocationReadSchema(BaseModel):
     id: int
     name: str

@@ -11,4 +11,6 @@
 11. Заполняем dependencies.py импортами
 12. Создаем админ-панель и swagger
     12.1 Устанавливаем библиотеку sqladmin(poetry add sqladmin), из которой импортируем ModelView и Admin
-    12.2 Добавляем в main.py  app.include_router(building_router), register_admin(app, engine)
+    12.2 Добавляем в main.py 
+app.include_router(building_router), register_admin(app, engine)
+

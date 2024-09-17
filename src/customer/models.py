@@ -18,3 +18,4 @@ class Customer(Base):  # покупатель
 
     def __repr__(self):
         return f"{self.id} {self.name} {self.age} {self.rating}"
+

@@ -17,3 +17,6 @@ class Cleaning(Base):  # Модель клининга
 
     def __repr__(self):
         return f"{self.id} {self.profile} {self.experience}"
+
+
+

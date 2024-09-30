@@ -2,7 +2,6 @@ from fastapi import APIRouter, Depends, status
 from sqlalchemy import delete, insert, select, update
 
 from database import get_async_session
-
 from .models import Building
 from .schemas import BuildingCreateSchema, BuildingReadSchema, BuildingUpdateSchema
 
@@ -45,15 +44,14 @@ async def delete_building_by_id(building_id: int, session=Depends(get_async_sess
 
 
 @router.put("/{building_id}", status_code=status.HTTP_200_OK)  # 5) Обновление данных
-async def update_building_by_id(
-    building_id: int, building: BuildingUpdateSchema, session=Depends(get_async_session)
-) -> BuildingReadSchema:
-    statement = (
-        update(Building)
-        .where(Building.id == building_id)
-        .values(name=building.name, profile=building.profile, year=building.year, floors=building.floors)
-        .returning(Building)
-    )
+async def update_building_by_id(building_id: int, building: BuildingUpdateSchema,
+                                session=Depends(get_async_session)) -> BuildingReadSchema:
+    statement = update(Building).where(Building.id == building_id).values(
+        name=building.name,
+        profile=building.profile,
+        year=building.year,
+        floors=building.floors
+    ).returning(Building)
     result = await session.scalar(statement)
     await session.commit()
     return result

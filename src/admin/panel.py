@@ -37,3 +37,4 @@ def register_admin(app: FastAPI, engine: AsyncEngine):
     admin.add_view(CustomerModelView)
     admin.add_view(EngineerModelView)
     admin.add_view(LocationModelView)
+

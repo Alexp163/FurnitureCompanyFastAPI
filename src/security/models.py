@@ -16,7 +16,7 @@ class Security(Base):
     created_at: Mapped[datetime] = mapped_column(server_default=func.now())
     updated_at: Mapped[datetime] = mapped_column(
         server_default=func.now(),
-        onupdate=func.now(),  # "onupdate" при обновлении
+        onupdate=func.now(),  # "update" при обновлении
     )
 
     def __repr__(self):

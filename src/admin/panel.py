@@ -2,11 +2,12 @@ from fastapi import FastAPI
 from sqladmin import Admin, ModelView
 from sqlalchemy.ext.asyncio import AsyncEngine
 
-from .dependencies import Building, Cleaning, Customer, Engineer, Location
+from .dependencies import Building, Cleaning, Customer, Engineer, Location, User, Worker, Order, Security
 
 
 class BuildingModelView(ModelView, model=Building):
-    column_list = [Building.name, Building.profile, Building.year, Building.floors]
+    column_list = [Building.name, Building.profile, Building.year, Building.floors, Building.cleaning_id,
+                   Building.engineer_id, Building.location_id, Building.security_id]
     form_excluded_columns = [Building.created_at, Building.updated_at]
 
 
@@ -30,6 +31,26 @@ class LocationModelView(ModelView, model=Location):
     form_excluded_columns = [Location.created_at, Location.updated_at]
 
 
+class UserModelView(ModelView, model=User):
+    column_list = [User.name, User.age, User.email]
+    form_excluded_columns = [User.created_at, User.updated_at]
+
+
+class WorkerModelView(ModelView, model=Worker):
+    column_list = [Worker.name, Worker.age, Worker.profession, Worker.experience]
+    from_excluded_columns = [Worker.created_at, Worker.updated_at]
+
+
+class OrderModelView(ModelView, model=Order):
+    column_list = [Order.price, Order.date_order, Order.customer_id, Order.engineer_id, Order.location_id]
+    form_excluded_columns = [Order.created_at, Order.updated_at]
+
+
+class SecurityModelView(ModelView, model=Security):
+    column_list = [Security.name, Security.age, Security.weapon]
+    form_excluded_column = [Security.created_at, Security.updated_at]
+
+
 def register_admin(app: FastAPI, engine: AsyncEngine):
     admin = Admin(app, engine)
     admin.add_view(BuildingModelView)
@@ -37,4 +58,10 @@ def register_admin(app: FastAPI, engine: AsyncEngine):
     admin.add_view(CustomerModelView)
     admin.add_view(EngineerModelView)
     admin.add_view(LocationModelView)
+    admin.add_view(UserModelView)
+    admin.add_view(WorkerModelView)
+    admin.add_view(OrderModelView)
+    admin.add_view(SecurityModelView)
+
+
 

@@ -19,4 +19,4 @@ class Engineer(Base):  # модель инженера
     )  # "update"-при обновлении
 
     def __repr__(self):
-        return f"{self.name} {self.scpecial} {self.experience}"
+        return f"{self.name} {self.special} {self.experience}"

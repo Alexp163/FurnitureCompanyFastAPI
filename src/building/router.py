@@ -25,7 +25,7 @@ async def create_building(building: BuildingCreateSchema, session=Depends(get_as
 @router.get("/", status_code=status.HTTP_202_ACCEPTED)  # 2) Получение данных о всех постройках
 async def get_buildings(session=Depends(get_async_session)) -> list[BuildingReadSchema]:
     statement = select(Building)
-    result = await session.scalar(statement)
+    result = await session.scalars(statement)
     return list(result)
 
 

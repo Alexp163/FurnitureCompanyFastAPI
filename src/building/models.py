@@ -17,7 +17,7 @@ class Building(Base):  # здание
     cleaning = relationship("Cleaning")
     cleaning_id: Mapped[int | None] = mapped_column(ForeignKey("cleaning.id"))  # специалист клининга
     engineer = relationship("Engineer")
-    engineer_id: Mapped[str | None] = mapped_column(ForeignKey("engineer.id"))  # инженер
+    engineer_id: Mapped[int| None] = mapped_column(ForeignKey("engineer.id"))  # инженер
     location = relationship("Location")
     location_id: Mapped[int | None] = mapped_column(ForeignKey("location.id"))  # город или населенный пункт
     security = relationship("Security")

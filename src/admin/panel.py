@@ -48,7 +48,7 @@ class OrderModelView(ModelView, model=Order):
 
 class SecurityModelView(ModelView, model=Security):
     column_list = [Security.name, Security.age, Security.weapon]
-    form_excluded_column = [Security.created_at, Security.updated_at]
+    form_excluded_columns = [Security.created_at, Security.updated_at]
 
 
 def register_admin(app: FastAPI, engine: AsyncEngine):

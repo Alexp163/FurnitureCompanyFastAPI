@@ -15,3 +15,7 @@ class Location(Base):  # модель локации(города) предпр�
     distance: Mapped[str] = mapped_column()  # расстояние до главного офиса в Москве
     created_at: Mapped[datetime] = mapped_column(server_default=func.now())
     updated_at: Mapped[datetime] = mapped_column(server_default=func.now(), onupdate=func.now())
+
+    def __repr__(self):
+        return f"{self.name} {self.city} {self.distance}"
+

@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, status
 from sqlalchemy import insert, select, update
 
 from database import get_async_session
-
+from .dependencies import Order, OrderReadSchema
 from .models import Location
 from .schemas import LocationCreateSchema, LocationReadSchema, LocationUpdateSchema
 
@@ -44,6 +44,14 @@ async def delete_location_by_id(location_id: int, session=Depends(get_async_sess
     statement = select(Location).where(Location.id == location_id)
     result = await session.scalar(statement)
     return result
+
+
+@router.get("/{location_id}/orders", status_code=status.HTTP_200_OK)  # выводит список всех заказов из локации
+async def get_location_orders(location_id: int, session=Depends(get_async_session)) -> list[OrderReadSchema]:
+    statement = select(Order).where(Order.location_id == location_id)
+    result = await session.scalars(statement)
+    return result
+
 
 
 @router.put("/{location_id}", status_code=status.HTTP_200_OK)  # 5) Обновляет данные о локации

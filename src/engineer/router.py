@@ -3,6 +3,7 @@ from sqlalchemy import delete, insert, select, update
 
 from database import get_async_session
 
+from .dependencies import Order, OrderReadSchema
 from .models import Engineer
 from .schemas import EngineerCreateSchema, EngineerReadSchema, EngineerUpdateSchema
 
@@ -40,6 +41,14 @@ async def delete_engineer_by_id(engineer_id: int, session=Depends(get_async_sess
     statement = delete(Engineer).where(Engineer.id == engineer_id)  # "where" - где
     await session.execute(statement)  # "execute" - выполнять
     await session.commit()
+
+
+@router.delete("/{engineer_id}/orders", status_code=status.HTTP_200_OK)  # выводит список заказов инженера
+async def get_engineer_orders(engineer_id: int, session=Depends(get_async_session)) -> list[OrderReadSchema]:
+    statement = select(Order).where(Order.engineer_id == engineer_id)
+    result = await session.scalars(statement)
+    return result
+
 
 
 @router.put("/{engineer_id}", status_code=status.HTTP_200_OK)  # 5 обновление инженера по id

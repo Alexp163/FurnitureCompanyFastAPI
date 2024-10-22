@@ -5,11 +5,12 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.sql import func
 
 from database import Base
-from engineer.models import Engineer
+
 
 
 class Order(Base):  # заказ
     __tablename__ = "order"
+
     id: Mapped[int] = mapped_column(primary_key=True)
     price: Mapped[float] = mapped_column() # стоимость заказа
     date_order: Mapped[datetime] = mapped_column()  # дата заказа

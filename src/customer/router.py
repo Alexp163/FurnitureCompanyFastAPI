@@ -3,6 +3,7 @@ from sqlalchemy import delete, insert, select, update
 
 from database import get_async_session
 
+from .dependecies import Order, OrderReadSchema
 from .models import Customer
 from .schemas import CustomerCreateSchema, CustomerReadSchema, CustomerUpdateSchema
 
@@ -38,6 +39,13 @@ async def delete_customer_by_id(customer_id: int, session=Depends(get_async_sess
     statement = delete(Customer).where(Customer.id == customer_id)
     await session.execute(statement)
     await session.commit()
+
+
+@router.get("/{customer_id}/orders", status_code=status.HTTP_200_OK)  # выводит список заказов заказчика
+async def get_customer_orders(customer_id: int, session=Depends(get_async_session)) -> list[OrderReadSchema]:
+    statement = select(Order).where(Order.customer_id == customer_id)
+    result = await session.scalars(statement)
+    return result
 
 
 @router.put("/{customer_id}", status_code=status.HTTP_200_OK)  # 5) Обновление данных о покупателе по id

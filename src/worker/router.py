@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, status
-from sqlalchemy import insert, select, delete, update
+from sqlalchemy import insert, select, delete, update, func
 
 from database import get_async_session
 
@@ -23,8 +23,10 @@ async def create_worker(worker: WorkerCreateSchema, session=Depends(get_async_se
 
 
 @router.get("/", status_code=status.HTTP_200_OK)  # 2) Получение данных о всех рабочих
-async def get_workers(session=Depends(get_async_session)) -> list[WorkerReadSchema]:
+async def get_workers(profession: str | None = None, session=Depends(get_async_session)) -> list[WorkerReadSchema]:
     statement = select(Worker)
+    if profession is not None:
+        statement = statement.where(func.upper(Worker.profession) == profession.upper())
     result = await session.scalars(statement)
     return list(result)
 

@@ -12,8 +12,8 @@ class Building(Base):  # здание
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column()  # название здания
     profile: Mapped[str] = mapped_column()  # профиль работы
-    year: Mapped[str] = mapped_column()  # дата постройки
-    floors: Mapped[str] = mapped_column()  # этажность
+    year: Mapped[int] = mapped_column()  # год постройки
+    floors: Mapped[int] = mapped_column()  # этажность постройки
     cleaning = relationship("Cleaning")
     cleaning_id: Mapped[int | None] = mapped_column(ForeignKey("cleaning.id"))  # специалист клининга
     engineer = relationship("Engineer")

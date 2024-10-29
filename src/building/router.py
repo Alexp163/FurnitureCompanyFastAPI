@@ -13,7 +13,10 @@ async def create_building(building: BuildingCreateSchema, session=Depends(get_as
     statement = (
         insert(Building)
         .values(  # "statement" - заявление
-            name=building.name, profile=building.profile, year=building.year, floors=building.floors
+            name=building.name,
+            profile=building.profile,
+            year=building.year,
+            floors=building.floors
         )
         .returning(Building)
     )
@@ -23,8 +26,14 @@ async def create_building(building: BuildingCreateSchema, session=Depends(get_as
 
 
 @router.get("/", status_code=status.HTTP_202_ACCEPTED)  # 2) Получение данных о всех постройках
-async def get_buildings(session=Depends(get_async_session)) -> list[BuildingReadSchema]:
+async def get_buildings(min_year: int | None = None,
+                        max_year: int | None = None,
+                        session=Depends(get_async_session)) -> list[BuildingReadSchema]:
     statement = select(Building)
+    if min_year is not None:
+        statement = statement.where(Building.year > min_year)
+    if max_year is not None:
+        statement = statement.where(Building.year < max_year)
     result = await session.scalars(statement)
     return list(result)
 

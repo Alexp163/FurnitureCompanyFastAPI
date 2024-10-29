@@ -11,23 +11,25 @@ router = APIRouter(tags=["locations"], prefix="/locations")
 
 @router.post("/", status_code=status.HTTP_201_CREATED)  # 1) Создает новую локацию
 async def created_location(location: LocationCreateSchema, session=Depends(get_async_session)) -> LocationReadSchema:
-    statement = (
-        insert(Location)
-        .values(
+    statement = insert(Location).values(
             name=location.name,
             city=location.city,
             distance=location,
-        )
-        .returning(Location)
-    )
+        ).returning(Location)
     result = await session.scalar(statement)
     await session.commit()
     return result
 
 
 @router.get("/", status_code=status.HTTP_202_ACCEPTED)  # 2) Возвращает все локации
-async def get_location(session=Depends(get_async_session)) -> list[LocationReadSchema]:
+async def get_location(name: str | None = None,
+                       city: str | None = None,
+                       session=Depends(get_async_session)) -> list[LocationReadSchema]:
     statement = select(Location)
+    if name is not None:
+        statement = statement.where(Location.name == name)
+    if city is not None:
+        statement = statement.where(Location.city == city)
     result = await session.scalars(statement)
     return result
 

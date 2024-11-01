@@ -1,5 +1,4 @@
 from fastapi import APIRouter, Depends, status
-from pycparser.ply.yacc import resultlimit
 from sqlalchemy import select, insert, delete, update
 
 from database import get_async_session
@@ -46,7 +45,7 @@ async def delete_user_by_id(user_id: int, session=Depends(get_async_session)) ->
 @router.put("/{user_id}", status_code=status.HTTP_200_OK)  # 5) Обновление данных user по id
 async def upgrade_user_by_id(user_id: int, user: UserUpdateSchema,
                              session=Depends(get_async_session)) -> UserReadSchema:
-    statement = select(User).where(User.id == user_id).values(
+    statement = update(User).where(User.id == user_id).values(
         name=user.name,
         age=user.age,
         email=user.email,
@@ -56,6 +55,7 @@ async def upgrade_user_by_id(user_id: int, user: UserUpdateSchema,
     result = await session.scalar(statement)
     await session.commit()
     return result
+
 
 
 

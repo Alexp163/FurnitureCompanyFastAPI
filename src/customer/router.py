@@ -49,15 +49,13 @@ async def get_customer_orders(customer_id: int, session=Depends(get_async_sessio
 
 
 @router.put("/{customer_id}", status_code=status.HTTP_200_OK)  # 5) Обновление данных о покупателе по id
-async def update_customer_by_id(
-    customer_id: int, customer: CustomerUpdateSchema, session=Depends(get_async_session)
-) -> CustomerReadSchema:
-    statement = (
-        update(Customer)
-        .where(Customer.id == customer_id)
-        .values(name=customer.name, age=customer.age, rating=customer.rating)
-        .returning(Customer)
-    )
+async def update_customer_by_id(customer_id: int, customer: CustomerUpdateSchema,
+                                session=Depends(get_async_session)) -> CustomerReadSchema:
+    statement = update(Customer).where(Customer.id == customer_id).values(
+        name=customer.name,
+        age=customer.age,
+        rating=customer.rating
+    ).returning(Customer)
     result = await session.scalar(statement)
     await session.commit()
     return result

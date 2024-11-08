@@ -32,3 +32,4 @@ class Building(Base):  # здание
         return (f"{self.id} {self.name} {self.profile} {self.year} {self.floors} {self.cleaning.id}"
                 f"{self.engineer.id} {self.location.id} {self.security.id} {self.worker.id}")
 
+

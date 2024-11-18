@@ -8,26 +8,23 @@ from .schemas import BuildingCreateSchema, BuildingReadSchema, BuildingUpdateSch
 router = APIRouter(tags=["buildings"], prefix="/buildings")
 
 
+# fmt: off
 @router.post("/", status_code=status.HTTP_201_CREATED)  # 1) Создание здания
 async def create_building(building: BuildingCreateSchema, session=Depends(get_async_session)) -> BuildingReadSchema:
-    statement = (
-        insert(Building)
-        .values(  # "statement" - заявление
+    statement = insert(Building).values(  # "statement" - заявление
             name=building.name,
             profile=building.profile,
             year=building.year,
             floors=building.floors
-        )
-        .returning(Building)
-    )
+    ).returning(Building)
     result = await session.scalar(statement)
     await session.commit()
     return result
+# fmt: on
 
-
+# fmt: off
 @router.get("/", status_code=status.HTTP_202_ACCEPTED)  # 2) Получение данных о всех постройках
-async def get_buildings(min_year: int | None = None,
-                        max_year: int | None = None,
+async def get_buildings(min_year: int | None = None, max_year: int | None = None,
                         session=Depends(get_async_session)) -> list[BuildingReadSchema]:
     statement = select(Building)
     if min_year is not None:
@@ -36,7 +33,7 @@ async def get_buildings(min_year: int | None = None,
         statement = statement.where(Building.year < max_year)
     result = await session.scalars(statement)
     return list(result)
-
+# fmt: on
 
 @router.get("/{building_id}", status_code=status.HTTP_202_ACCEPTED)  # 3) Получение данных о здании по id
 async def get_building_by_id(building_id: int, session=Depends(get_async_session)) -> BuildingReadSchema:
@@ -52,6 +49,7 @@ async def delete_building_by_id(building_id: int, session=Depends(get_async_sess
     await session.commit()
 
 
+# fmt: off
 @router.put("/{building_id}", status_code=status.HTTP_200_OK)  # 5) Обновление данных
 async def update_building_by_id(building_id: int, building: BuildingUpdateSchema,
                                 session=Depends(get_async_session)) -> BuildingReadSchema:
@@ -64,3 +62,4 @@ async def update_building_by_id(building_id: int, building: BuildingUpdateSchema
     result = await session.scalar(statement)
     await session.commit()
     return result
+# fmt: on

@@ -13,10 +13,11 @@ class Engineer(Base):  # модель инженера
     name: Mapped[str] = mapped_column()
     special: Mapped[str] = mapped_column()
     experience: Mapped[str] = mapped_column()
+    wallet: Mapped[float | None] = mapped_column("0")
     created_at: Mapped[datetime] = mapped_column(server_default=func.now())  # дата создания
     updated_at: Mapped[datetime] = mapped_column(
         server_default=func.now(), onupdate=func.now()
     )  # "update"-при обновлении
 
     def __repr__(self):
-        return f"{self.name} {self.special} {self.experience}"
+        return f"{self.name} {self.special} {self.experience} {self.wallet}"

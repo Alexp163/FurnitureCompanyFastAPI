@@ -7,6 +7,8 @@ from .schemas import UserReadSchema, UserCreateSchema, UserUpdateSchema
 
 router = APIRouter(tags=["users"], prefix="/users")
 
+
+# fmt: off
 @router.post("/", status_code=status.HTTP_201_CREATED)  # 1) создание пользователя
 async def create_user(user: UserCreateSchema, session=Depends(get_async_session)) -> UserReadSchema:
     statement = insert(User).values(
@@ -19,6 +21,7 @@ async def create_user(user: UserCreateSchema, session=Depends(get_async_session)
     result = await session.scalar(statement)
     await session.commit()
     return result
+# fmt: on
 
 
 @router.get("/", status_code=status.HTTP_202_ACCEPTED)  # 2) получает данные о всех пользователях
@@ -42,6 +45,7 @@ async def delete_user_by_id(user_id: int, session=Depends(get_async_session)) ->
     await session.commit()
 
 
+# fmt: off
 @router.put("/{user_id}", status_code=status.HTTP_200_OK)  # 5) Обновление данных user по id
 async def upgrade_user_by_id(user_id: int, user: UserUpdateSchema,
                              session=Depends(get_async_session)) -> UserReadSchema:
@@ -55,9 +59,4 @@ async def upgrade_user_by_id(user_id: int, user: UserUpdateSchema,
     result = await session.scalar(statement)
     await session.commit()
     return result
-
-
-
-
-
-
+# fmt: on

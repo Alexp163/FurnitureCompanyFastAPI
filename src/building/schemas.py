@@ -10,8 +10,8 @@ class BuildingReadSchema(BaseModel):
     year: int  # год постройки
     floors: int  # этажность
     cleaning_id: int | None  # специалист клининга
-    engineer_id: int | None # инженер
-    location_id: int | None # локация
+    engineer_id: int | None  # инженер
+    location_id: int | None  # локация
     created_at: datetime  # дата создания
     updated_at: datetime  # дата обновления
 
@@ -19,17 +19,18 @@ class BuildingReadSchema(BaseModel):
 class BuildingCreateSchema(BaseModel):
     name: str
     profile: str
-    year: int
-    floors: int
+    year: int | None
+    floors: int | None
     cleaning_id: int | None  # специалист клининга
     engineer_id: int | None  # инженер
-    location_id: int | None # локация
+    location_id: int | None  # локация
+
 
 class BuildingUpdateSchema(BaseModel):
     name: str
     profile: str
-    year: int
-    floors: int
-    cleaning_id: int | None # специалист клининга
+    year: int | None
+    floors: int | None
+    cleaning_id: int | None  # специалист клининга
     engineer_id: int | None  # инженер
-    location_id: int | None # локация
+    location_id: int | None  # локация

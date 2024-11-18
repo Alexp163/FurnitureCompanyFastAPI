@@ -10,14 +10,19 @@ from .schemas import CustomerCreateSchema, CustomerReadSchema, CustomerUpdateSch
 router = APIRouter(tags=["customers"], prefix="/customers")
 
 
+# fmt: off
 @router.post("/", status_code=status.HTTP_201_CREATED)  # 1) Создание покупателя
 async def create_customer(customer: CustomerCreateSchema, session=Depends(get_async_session)) -> CustomerReadSchema:
-    statement = (
-        insert(Customer).values(name=customer.name, age=customer.age, rating=customer.rating).returning(Customer)
-    )
+    statement = insert(Customer).values(
+        name=customer.name,
+        age=customer.age,
+        rating=customer.rating,
+        wallet=customer.wallet
+    ).returning(Customer)
     result = await session.scalar(statement)
     await session.commit()
     return result
+# fmt: on
 
 
 @router.get("/", status_code=status.HTTP_202_ACCEPTED)  # 2) получает данные о всех клиентах
@@ -48,14 +53,17 @@ async def get_customer_orders(customer_id: int, session=Depends(get_async_sessio
     return result
 
 
+# fmt: of
 @router.put("/{customer_id}", status_code=status.HTTP_200_OK)  # 5) Обновление данных о покупателе по id
 async def update_customer_by_id(customer_id: int, customer: CustomerUpdateSchema,
                                 session=Depends(get_async_session)) -> CustomerReadSchema:
     statement = update(Customer).where(Customer.id == customer_id).values(
         name=customer.name,
         age=customer.age,
-        rating=customer.rating
+        rating=customer.rating,
+        wallet=customer.wallet
     ).returning(Customer)
     result = await session.scalar(statement)
     await session.commit()
     return result
+# fmt: on

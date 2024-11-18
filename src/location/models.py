@@ -18,4 +18,3 @@ class Location(Base):  # модель локации(города) предпр�
 
     def __repr__(self):
         return f"{self.name} {self.city} {self.distance}"
-

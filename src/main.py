@@ -11,6 +11,7 @@ from user.router import router as user_router
 from worker.router import router as worker_router
 from order.router import router as order_router
 from security.router import router as security_router
+from bank.router import router as bank_router
 
 
 app = FastAPI()
@@ -23,5 +24,6 @@ app.include_router(user_router)
 app.include_router(worker_router)
 app.include_router(order_router)
 app.include_router(security_router)
+app.include_router(bank_router)
 
 register_admin(app, engine)

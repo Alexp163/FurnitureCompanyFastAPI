@@ -18,11 +18,10 @@ class UserCreateSchema(BaseModel):
     address: str
     password: str
 
+
 class UserUpdateSchema(BaseModel):
     name: str
     age: str
     email: str
     address: str
     password: str
-
-

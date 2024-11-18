@@ -7,16 +7,19 @@ class EngineerReadSchema(BaseModel):
     name: str
     special: str
     experience: str
+    wallet: float | None
     created_at: datetime
     updated_at: datetime
+
 
 class EngineerCreateSchema(BaseModel):
     name: str
     special: str
     experience: str
-
+    wallet: float | None
 
 class EngineerUpdateSchema(BaseModel):
     name: str
     special: str
     experience: str
+    wallet: float | None

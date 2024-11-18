@@ -7,4 +7,4 @@ from user.models import User
 from worker.models import Worker
 from order.models import Order
 from security.models import Security
-
+from bank.models import Bank

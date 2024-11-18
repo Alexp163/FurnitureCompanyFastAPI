@@ -27,5 +27,4 @@ class OrderUpdateSchema(BaseModel):
     date_order: datetime
     customer_id: int | None
     engineer_id: int | None
-    location_id: int |None
-
+    location_id: int | None

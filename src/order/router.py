@@ -9,6 +9,8 @@ from .schemas import OrderCreateSchema, OrderReadSchema, OrderUpdateSchema
 
 router = APIRouter(tags=["orders"], prefix="/orders")
 
+
+# fmt: off
 @router.post("/", status_code=status.HTTP_201_CREATED)  # 1) Создать заказ
 async def create_order(order: OrderCreateSchema, session=Depends(get_async_session)) -> OrderReadSchema:
     statement = insert(Order).values(
@@ -19,19 +21,24 @@ async def create_order(order: OrderCreateSchema, session=Depends(get_async_sessi
         location_id=order.location_id
     ).returning(Order)
     result = await session.scalar(statement)
+    statement = select(Bank).where(Bank.id ==order.bank_id)
+
     await session.commit()
     return result
+# fmt: on
 
 
+# fmt: off
 @router.get("/", status_code=status.HTTP_200_OK)  # 2) получение данных о всех заказах
-async def get_orders(start_date: datetime | None = None,
-                     end_date: datetime | None = None,
-                     start_price: float | None = None,
-                     end_price: float | None = None,
-                     customer_id: int | None = None,
-                     engineer_id: int | None = None,
-                     location_id: int | None = None,
-                     session=Depends(get_async_session)) -> list[OrderReadSchema]:
+async def get_orders(
+    start_date: datetime | None = None,
+    end_date: datetime | None = None,
+    start_price: float | None = None,
+    end_price: float | None = None,
+    customer_id: int | None = None,
+    engineer_id: int | None = None,
+    location_id: int | None = None,
+    session=Depends(get_async_session)) -> list[OrderReadSchema]:
     statement = select(Order)
     if start_date is not None:
         statement = statement.where(Order.created_at >= start_date)
@@ -49,6 +56,7 @@ async def get_orders(start_date: datetime | None = None,
         statement = statement.where(Order.location_id == location_id)
     result = await session.scalars(statement)
     return list(result)
+# fmt: on
 
 
 @router.get("/{order_id)", status_code=status.HTTP_200_OK)  # 3) получение данных о заказе по id
@@ -59,12 +67,13 @@ async def get_order_by_id(order_id: int, session=Depends(get_async_session)) -> 
 
 
 @router.delete("/{order_id}", status_code=status.HTTP_204_NO_CONTENT)  # 4) Удаление заказа по id
-async def delete_order_by_id(order_id: int, session=Depends(get_async_session))  -> None:
+async def delete_order_by_id(order_id: int, session=Depends(get_async_session)) -> None:
     statement = delete(Order).where(Order.id == order_id)
     await session.execute(statement)
     await session.commit()
 
 
+# fmt: off
 @router.put("/{order_id}", status_code=status.HTTP_200_OK)  # 5) Обновление заказа по id
 async def update_order_by_id(order_id: int, order: OrderUpdateSchema,
                              session=Depends(get_async_session)) -> OrderReadSchema:
@@ -78,5 +87,4 @@ async def update_order_by_id(order_id: int, order: OrderUpdateSchema,
     result = await session.scalar(statement)
     await session.commit()
     return result
-
-
+# fmt: on

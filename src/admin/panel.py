@@ -2,27 +2,27 @@ from fastapi import FastAPI
 from sqladmin import Admin, ModelView
 from sqlalchemy.ext.asyncio import AsyncEngine
 
-from .dependencies import Building, Cleaning, Customer, Engineer, Location, User, Worker, Order, Security
+from .dependencies import Building, Cleaning, Customer, Engineer, Location, User, Worker, Order, Security, Bank
 
-
+# fmt: off
 class BuildingModelView(ModelView, model=Building):
     column_list = [Building.name, Building.profile, Building.year, Building.floors, Building.cleaning_id,
-                   Building.engineer_id, Building.location_id, Building.security_id]
+        Building.engineer_id, Building.location_id, Building.security_id,]
     form_excluded_columns = [Building.created_at, Building.updated_at]
 
 
 class CleaningModelView(ModelView, model=Cleaning):
-    column_list = [Cleaning.profile, Cleaning.experience]
+    column_list = [Cleaning.profile, Cleaning.experience, Cleaning.wallet]
     form_excluded_columns = [Cleaning.created_at, Cleaning.updated_at]
 
 
 class CustomerModelView(ModelView, model=Customer):
-    column_list = [Customer.name, Customer.age, Customer.rating]
+    column_list = [Customer.name, Customer.age, Customer.rating, Customer.wallet]
     form_excluded_columns = [Customer.created_at, Customer.updated_at]
 
 
 class EngineerModelView(ModelView, model=Engineer):
-    column_list = [Engineer.name, Engineer.special, Engineer.experience]
+    column_list = [Engineer.name, Engineer.special, Engineer.experience, Engineer.wallet]
     form_excluded_columns = [Engineer.created_at, Engineer.updated_at]
 
 
@@ -37,7 +37,7 @@ class UserModelView(ModelView, model=User):
 
 
 class WorkerModelView(ModelView, model=Worker):
-    column_list = [Worker.name, Worker.age, Worker.profession, Worker.experience]
+    column_list = [Worker.name, Worker.age, Worker.profession, Worker.experience, Worker.wallet]
     from_excluded_columns = [Worker.created_at, Worker.updated_at]
 
 
@@ -47,9 +47,13 @@ class OrderModelView(ModelView, model=Order):
 
 
 class SecurityModelView(ModelView, model=Security):
-    column_list = [Security.name, Security.age, Security.weapon]
+    column_list = [Security.name, Security.age, Security.weapon, Security.wallet]
     form_excluded_columns = [Security.created_at, Security.updated_at]
 
+
+class BankModelView(ModelView, model=Bank):
+    column_list = [Bank.payment, Bank.wallet]
+    form_excluded_columns = [Bank.created_at, Bank.updated_at]
 
 def register_admin(app: FastAPI, engine: AsyncEngine):
     admin = Admin(app, engine)
@@ -62,6 +66,6 @@ def register_admin(app: FastAPI, engine: AsyncEngine):
     admin.add_view(WorkerModelView)
     admin.add_view(OrderModelView)
     admin.add_view(SecurityModelView)
+    admin.add_view(BankModelView)
 
-
-
+# fmt: on

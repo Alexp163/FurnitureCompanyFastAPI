@@ -12,12 +12,12 @@ class Building(Base):  # здание
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column()  # название здания
     profile: Mapped[str] = mapped_column()  # профиль работы
-    year: Mapped[int] = mapped_column()  # год постройки
-    floors: Mapped[int] = mapped_column()  # этажность постройки
+    year: Mapped[int | None] = mapped_column()  # год постройки
+    floors: Mapped[int | None] = mapped_column()  # этажность постройки
     cleaning = relationship("Cleaning")
     cleaning_id: Mapped[int | None] = mapped_column(ForeignKey("cleaning.id"))  # специалист клининга
     engineer = relationship("Engineer")
-    engineer_id: Mapped[int| None] = mapped_column(ForeignKey("engineer.id"))  # инженер
+    engineer_id: Mapped[int | None] = mapped_column(ForeignKey("engineer.id"))  # инженер
     location = relationship("Location")
     location_id: Mapped[int | None] = mapped_column(ForeignKey("location.id"))  # город или населенный пункт
     security = relationship("Security")
@@ -29,7 +29,7 @@ class Building(Base):  # здание
     updated_at: Mapped[datetime] = mapped_column(server_default=func.now(), onupdate=func.now())  # дата обновления
 
     def __repr__(self):
-        return (f"{self.id} {self.name} {self.profile} {self.year} {self.floors} {self.cleaning.id}"
-                f"{self.engineer.id} {self.location.id} {self.security.id} {self.worker.id}")
-
-
+        return (
+            f"{self.id} {self.name} {self.profile} {self.year} {self.floors} {self.cleaning.id}"
+            f"{self.engineer.id} {self.location.id} {self.security.id} {self.worker.id}"
+        )

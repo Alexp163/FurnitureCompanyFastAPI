@@ -7,13 +7,14 @@ from sqlalchemy.sql import func
 from database import Base
 
 
-
 class Order(Base):  # заказ
     __tablename__ = "order"
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    price: Mapped[float] = mapped_column() # стоимость заказа
+    price: Mapped[float] = mapped_column()  # стоимость заказа
     date_order: Mapped[datetime] = mapped_column()  # дата заказа
+    bank: Mapped["Bank"] = relationship("Bank")
+    bank_id: Mapped[int | None] = mapped_column(ForeignKey("bank.id"))
     customer: Mapped["Customer"] = relationship("Customer")  # заказчик(покупатель)
     customer_id: Mapped[int | None] = mapped_column(ForeignKey("customer.id"))
     engineer: Mapped["Engineer"] = relationship("Engineer")  # инженер-изготовитель заказа
@@ -25,4 +26,3 @@ class Order(Base):  # заказ
 
     def __repr__(self):
         return f"{self.price} {self.date_order} {self.customer_id} {self.engineer_id} {self.location_id} "
-

@@ -9,16 +9,19 @@ from .schemas import SecurityCreateSchema, SecurityReadSchema, SecurityUpdateSch
 router = APIRouter(tags=["security"], prefix="/security")
 
 
+# fmt: off
 @router.post("/", status_code=status.HTTP_201_CREATED)  # 1) Создание охранника
 async def create_security(security: SecurityCreateSchema, session=Depends(get_async_session)) -> SecurityReadSchema:
     statement = insert(Security).values(
         name=security.name,
         age=security.age,
-        weapon=security.weapon
+        weapon=security.weapon,
+        wallet=security.wallet
     ).returning(Security)
     result = await session.scalar(statement)
     await session.commit()
     return result
+# fmt: on
 
 
 @router.get("/", status_code=status.HTTP_200_OK)  # 2) получает данные о всех охранниках
@@ -42,15 +45,17 @@ async def delete_security_by_id(security_id: int, session=Depends(get_async_sess
     await session.commit()
 
 
+# fmt: off
 @router.put("/{security_id}", status_code=status.HTTP_200_OK)  # 5) Обновление данных по id
 async def update_security_by_id(security_id: int, security: SecurityUpdateSchema,
                                 session=Depends(get_async_session)) -> SecurityReadSchema:
     statement = update(Security).where(Security.id == security_id).values(
         name=security.name,
         age=security.age,
-        weapon=security.weapon
+        weapon=security.weapon,
+        wallet=security.wallet
     ).returning(Security)
     result = await session.scalar(statement)
     await session.commit()
     return result
-
+# fmt: on

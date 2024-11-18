@@ -7,3 +7,4 @@ from user.models import *
 from worker.models import *
 from order.models import *
 from security.models import *
+from bank.models import *

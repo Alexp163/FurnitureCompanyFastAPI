@@ -10,16 +10,19 @@ from .schemas import EngineerCreateSchema, EngineerReadSchema, EngineerUpdateSch
 router = APIRouter(tags=["engineers"], prefix="/engineers")
 
 
+# fmt: off
 @router.post("/", status_code=status.HTTP_201_CREATED)  # 1) создание инженера
 async def create_engineer(engineer: EngineerCreateSchema, session=Depends(get_async_session)) -> EngineerReadSchema:
-    statement = (
-        insert(Engineer)
-        .values(name=engineer.name, special=engineer.special, experience=engineer.experience)
-        .returning(Engineer)
-    )
+    statement = insert(Engineer).values(
+        name=engineer.name,
+        special=engineer.special,
+        experience=engineer.experience,
+        wallet=engineer.wallet
+    ).returning(Engineer)
     result = await session.scalar(statement)
     await session.commit()
     return result
+# fmt: on
 
 
 @router.get("/", status_code=status.HTTP_202_ACCEPTED)  # 2) Получает данные о всех инженерах
@@ -43,16 +46,16 @@ async def delete_engineer_by_id(engineer_id: int, session=Depends(get_async_sess
     await session.commit()
 
 
+# fmt: off
 @router.put("/{engineer_id}", status_code=status.HTTP_200_OK)  # 5 обновление инженера по id
-async def update_engineer_by_id(
-    engineer_id: int, engineer: EngineerUpdateSchema, session=Depends(get_async_session)
-) -> EngineerReadSchema:
-    statement = (
-        update(Engineer)
-        .where(Engineer.id == engineer_id)
-        .values(name=engineer.name, special=engineer.special, experience=engineer.experience)
-        .returning(Engineer)
-    )
+async def update_engineer_by_id(engineer_id: int, engineer: EngineerUpdateSchema, session=Depends(get_async_session)) -> EngineerReadSchema:
+    statement = update(Engineer).where(Engineer.id == engineer_id).values(
+        name=engineer.name,
+        special=engineer.special,
+        experience=engineer.experience,
+        wallet=engineer.wallet
+    ).returning(Engineer)
     result = await session.scalar(statement)
     await session.commit()
     return result
+# fmt: on

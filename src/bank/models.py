@@ -5,7 +5,7 @@ from sqlalchemy.sql import func
 
 from database import Base
 
-
+# fmt: off
 class Bank(Base):  # счета предприятия для оплаты
     __tablename__ = "bank"
 
@@ -18,3 +18,4 @@ class Bank(Base):  # счета предприятия для оплаты
     def __repr__(self):
         return f"{self.id} {self.payment} {self.wallet}"
 
+#fmt: on

@@ -4,10 +4,15 @@ from fastapi import APIRouter, status, Depends
 from sqlalchemy import insert, select, delete, update
 
 from database import get_async_session
+from .dependecies import Bank, Customer, Worker, Engineer, Security, Cleaning
 from .models import Order
 from .schemas import OrderCreateSchema, OrderReadSchema, OrderUpdateSchema
+from .utils import increase_wallet
+
 
 router = APIRouter(tags=["orders"], prefix="/orders")
+
+
 
 
 # fmt: off
@@ -16,13 +21,21 @@ async def create_order(order: OrderCreateSchema, session=Depends(get_async_sessi
     statement = insert(Order).values(
         price=order.price,
         date_order=order.date_order,
+        bank_id=order.bank_id,
         customer_id=order.customer_id,
         engineer_id=order.engineer_id,
+        worker_id=order.worker_id,
+        security_id=order.security_id,
+        cleaning_id=order.cleaning_id,
         location_id=order.location_id
     ).returning(Order)
     result = await session.scalar(statement)
-    statement = select(Bank).where(Bank.id ==order.bank_id)
-
+    await increase_wallet(Bank, order.price, session, 0.5, order.bank_id)  # перевод денег в банк организации
+    await increase_wallet(Customer, order.price, session, 1, order.customer_id)  # снятие денег со счета заказчика
+    await increase_wallet(Engineer, order.price, session, 0.2, order.engineer_id)  #  зачисление денег инженеру
+    await increase_wallet(Worker, order.price, session, 0.1, order.worker_id)  #  зачисление денег рабочему
+    await increase_wallet(Security, order.price, session, 0.1, order.security_id)  # зачисление денег охраннику
+    await increase_wallet(Cleaning, order.price, session, 0.1, order.cleaning_id)  # зачисление денег клинингу
     await session.commit()
     return result
 # fmt: on
@@ -80,8 +93,12 @@ async def update_order_by_id(order_id: int, order: OrderUpdateSchema,
     statement = update(Order).where(Order.id == order_id).values(
         price=order.price,
         date_order=order.date_order,
+        bank_id=order.bank_id,
         customer_id=order.customer_id,
         engineer_id=order.engineer_id,
+        worker_id=order.worker_id,
+        security_id=order.security_id,
+        cleaning_id=order.cleaning_id,
         location_id=order.location_id
     ).returning(Order)
     result = await session.scalar(statement)

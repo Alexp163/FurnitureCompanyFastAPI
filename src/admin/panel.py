@@ -42,7 +42,8 @@ class WorkerModelView(ModelView, model=Worker):
 
 
 class OrderModelView(ModelView, model=Order):
-    column_list = [Order.price, Order.date_order, Order.customer_id, Order.engineer_id, Order.location_id]
+    column_list = [Order.price, Order.date_order, Order.bank_id, Order.customer_id, Order.engineer_id, Order.worker_id,
+                   Order.security_id, Order.cleaning_id, Order.location_id]
     form_excluded_columns = [Order.created_at, Order.updated_at]
 
 

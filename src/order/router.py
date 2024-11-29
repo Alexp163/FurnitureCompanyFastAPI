@@ -31,7 +31,7 @@ async def create_order(order: OrderCreateSchema, session=Depends(get_async_sessi
     ).returning(Order)
     result = await session.scalar(statement)
     await increase_wallet(Bank, order.price, session, 0.5, order.bank_id)  # перевод денег в банк организации
-    await increase_wallet(Customer, order.price, session, 1, order.customer_id)  # снятие денег со счета заказчика
+    await increase_wallet(Customer, order.price, session, -1, order.customer_id)  # снятие денег со счета заказчика
     await increase_wallet(Engineer, order.price, session, 0.2, order.engineer_id)  #  зачисление денег инженеру
     await increase_wallet(Worker, order.price, session, 0.1, order.worker_id)  #  зачисление денег рабочему
     await increase_wallet(Security, order.price, session, 0.1, order.security_id)  # зачисление денег охраннику

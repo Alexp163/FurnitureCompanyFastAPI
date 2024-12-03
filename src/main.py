@@ -27,3 +27,4 @@ app.include_router(security_router)
 app.include_router(bank_router)
 
 register_admin(app, engine)
+

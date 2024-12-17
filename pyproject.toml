@@ -16,6 +16,7 @@ postgres = "^4.0"
 alembic = "^1.13.2"
 sqladmin = "^0.18.0"
 ruff = "^0.6.2"
+pyqt5 = "^5.15.11"
 
 
 [build-system]
